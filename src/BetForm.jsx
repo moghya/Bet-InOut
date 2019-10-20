@@ -31,6 +31,7 @@ class BetForm extends Component {
             web3: '',
             teamId: '',
             betAmount: '',
+            hasSetBet: false,
             teams: []
         }
         this.getTeamDetails = this.getTeamDetails.bind(this);
@@ -54,6 +55,16 @@ class BetForm extends Component {
                 this.setState({ teams: newTeams});
                 console.log(this.state.teams);
             });
+            return HackathonBettingInstance.bettors(this.state.address);
+        }).then((betDetails)=> {
+            console.log(betDetails);
+            // if(betDetails.isBetPlaced === true) {
+            //     this.setState({
+            //         teamId: betDetails.teamId.toNumber(),
+            //         betAmount: betDetails.betAmount.toNumber(),
+            //         hasSetBet: true
+            //     });
+            // }
         }).catch((err)=> {
             console.error(err, ' on getTeamDetails.');
         });
@@ -121,6 +132,9 @@ class BetForm extends Component {
                 }).then((instance) => {
 					return instance.placeBet(this.state.teamId, { from: this.state.address, value: this.state.betAmount });
                 }).then((result)=> {
+                    this.setState({
+                        hasSetBet: true
+                    });
                     console.log(result);
                 })
                 .catch(function (err) {
@@ -135,6 +149,32 @@ class BetForm extends Component {
     renderTableData() {
         let html = this.state.teams.map((team, index) => <tr key={team.id}> <td>{team.id}</td> <td>{team.name}</td> <td>{team.betCount}</td><td>{team.totalBetAmount}</td></tr>)
         return html;
+    }
+
+    renderBetForm() {
+        if(this.state.hasSetBet === false) {
+            return (
+                <div class="betform">
+                    <select onChange={this.handleTeamChange}><option>Select Team</option>                
+                        {
+                            this.state.teams.map((team, index) => {
+                                return (<option key={index} value={team.id}>{team.name}</option>);
+                            })
+                        }
+                    </select>
+                    <input type="text" onChange={this.handleAmountChange} required="" pattern="[0-9]*[.,][0-9]*" placeholder="Bet Amount (1ETH min)"/>
+                    <button onClick={this.placeBet}>Bet</button>
+                    <br/><span class="address">Your Address:  { this.state.address }</span>
+                </div>
+            )
+        } else {
+            return (
+                <div class="betform">
+                    <br/><span class="address">Your Address:  { this.state.address }</span>
+                    <br/><span class="address">You have placed Bet of { this.state.betAmount } ETH, on team with teamId: { this.state.teamId }  </span>
+                </div>
+            )
+        }
     }
 
 
@@ -154,22 +194,9 @@ class BetForm extends Component {
                             </tbody>
                         </table>
                     </div>
-                    <div class="betform">
-                        <select onChange={this.handleTeamChange}><option>Select Team</option>                
-                        {
-                            this.state.teams.map((team, index) => {
-                                return (
-                                    
-                                    <option key={index} value={team.id}>{team.name}</option>
-                                    
-                                );
-                            })
-                        }
-                        </select>
-                        <input type="text" onChange={this.handleAmountChange} required="" pattern="[0-9]*[.,][0-9]*" placeholder="Bet Amount (1ETH min)"/>
-                        <button onClick={this.placeBet}>Bet</button>
-                        <span class="address">Your Address:{ this.state.address }</span>
-                    </div>
+                    {
+                        this.renderBetForm()
+                    }
                 </div>
             );
         } else {

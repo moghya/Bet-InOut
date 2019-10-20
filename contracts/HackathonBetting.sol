@@ -35,10 +35,10 @@ contract HackathonBetting {
         minBetAmount = 1;
         addTeam("SO_REUSEPOSRT");
         addTeam("ANOTHER_TEAM");
-        addTeam("3");
-        addTeam("4");
-        addTeam("5");
-        addTeam("6");
+        addTeam("YET_ANOTHER_TEAM");
+        addTeam("TEAM_IS_THIS");
+        addTeam("LOCKED_MUTEX");
+        addTeam("OUT_IN_DOWN_UP");
     }
 
     function placeBet (uint _teamId) public payable {
