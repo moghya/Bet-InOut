@@ -147,7 +147,7 @@ class BetForm extends Component {
 
 
     renderTableData() {
-        let html = this.state.teams.map((team, index) => <tr key={team.id}> <td>{team.id}</td> <td>{team.name}</td> <td>{team.betCount}</td><td>{team.totalBetAmount}</td></tr>)
+        let html = this.state.teams.map((team, index) => <tr key={team.id}> <td>{team.id}</td> <td>{team.name.replace('SO_REUSEPOSRT','SO_REUSEPORT')}</td> <td>{team.betCount}</td><td>{team.totalBetAmount}</td></tr>)
         return html;
     }
 
@@ -158,7 +158,7 @@ class BetForm extends Component {
                     <select onChange={this.handleTeamChange}><option>Select Team</option>                
                         {
                             this.state.teams.map((team, index) => {
-                                return (<option key={index} value={team.id}>{team.name}</option>);
+                                return (<option key={index} value={team.id}>{team.name.replace('SO_REUSEPOSRT','SO_REUSEPORT')}</option>);
                             })
                         }
                     </select>
