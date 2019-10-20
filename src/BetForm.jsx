@@ -6,6 +6,23 @@ import './App.css';
 import HackathonBetting from './contracts/HackathonBetting';
 
 
+async function getTeams(teamsCount,HackathonBettingInstance) {
+    return new Promise(async (resolve)=> {
+        let newTeams = [];
+        for (let i = 1; i <= teamsCount; i++) {
+            let teamRecord = await HackathonBettingInstance.teams(i);
+            let id = teamRecord[0].toNumber();
+            let name = teamRecord[1];
+            let betCount = teamRecord[2].toNumber();
+            let totalBetAmount = teamRecord[3].toNumber();
+            let team = {id, name, betCount, totalBetAmount};
+            console.log(JSON.stringify(team));
+            newTeams.push(team);
+        }
+        resolve(newTeams);
+    });
+}
+
 class BetForm extends Component {
     constructor() {
         super();
@@ -14,10 +31,9 @@ class BetForm extends Component {
             web3: '',
             teamId: '',
             betAmount: '',
-            teams: [{id:1, name:'shubham', betCount:1, totalBetAmount:123}]
+            teams: []
         }
         this.getTeamDetails = this.getTeamDetails.bind(this);
-        // this.getBetAmount = this.getBetAmount.bind(this);
         this.placeBet = this.placeBet.bind(this);
         this.handleTeamChange = this.handleTeamChange.bind(this);
         this.handleAmountChange = this.handleAmountChange.bind(this);
@@ -33,22 +49,10 @@ class BetForm extends Component {
             return HackathonBettingInstance.teamsCount();
         }).then((rawCount) => {
             const teamsCount = rawCount.toNumber();
-            let teamsPromises = [];
-            for (let i = 1; i <= teamsCount; i++) {
-                teamsPromises.push(HackathonBettingInstance.teams(i));
-            }
-            teamsPromises
-            Promise.all(teamsPromises);
-            .then((teams) => {
-                let id = team[0];
-                let name = team[1];
-                let betCount = team[2];
-                let totalBetAmount = team[3];
-                let newTeams = Array.from(this.state.teams);
-                newTeams.push({
-                    id, name, betCount, totalBetAmount,
-                });
+            getTeams(teamsCount, HackathonBettingInstance)
+            .then((newTeams)=> {
                 this.setState({ teams: newTeams});
+                console.log(this.state.teams);
             });
         }).catch((err)=> {
             console.error(err, ' on getTeamDetails.');
@@ -128,47 +132,44 @@ class BetForm extends Component {
     }
 
 
+    renderTableData() {
+        let html = this.state.teams.map((team, index) => <tr key={team.id}> <td>{team.id}</td> <td>{team.name}</td> <td>{team.betCount}</td><td>{team.totalBetAmount}</td></tr>)
+        return html;
+    }
+
+
     render() {
         if(this.state.teams && this.state.teams.length) {
             return (
                 <div>
-                <div>
-                    <table>
-                         <tr><th>TeamId</th><th>TeamName</th><th>Count of Bets</th><th>Total Bet Amount</th></tr>
-                        <tbody>
+                    <div>
+                        <table>
+                            <thead>
+                                <tr><th>TeamId</th><th>TeamName</th><th>Count of Bets</th><th>Total Bet Amount</th></tr>
+                            </thead>
+                            <tbody>
+                            {
+                                this.renderTableData()
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="betform">
+                        <select onChange={this.handleTeamChange}><option>Select Team</option>                
                         {
                             this.state.teams.map((team, index) => {
-                                return <tr key={index}><td>{team.id}</td><td>{team.name}</td><td>{team.betCount}</td><td>{team.totalBetAmount}</td></tr>
-                            })
-                        }
-                        </tbody>
-                    </table>
-                </div>
-                <div>
-                    <h5 > Choose Team to Bet on </h5> 
-                    <div className = "input-group" onChange= { this.handleTeamChange }>
-                        <select className = "form-control">
-                        <option>Select Team</option>
-                        {
-                            this.state.teams.map((team, index) => {
-                                return <option value={team.id}>{team.name}</option>
+                                return (
+                                    
+                                    <option key={index} value={team.id}>{team.name}</option>
+                                    
+                                );
                             })
                         }
                         </select>
-
-                        
-                    </div> 
-                    <hr/>
-                    <h5 > Enter Bet Amount(minimum 1 ETH) </h5> 
-                    <div className = "input-group" >
-                        <input type = "text"
-                        className = "form-control"
-                        required pattern = "[0-9]*[.,][0-9]*" onChange= { this.handleAmountChange } />
-                        <span className = "input-group-addon" > ETH </span> 
-                    </div> 
-                    <br/>
-                    <button onClick = { this.placeBet} > Bet </button> 
-                </div>
+                        <input type="text" onChange={this.handleAmountChange} required="" pattern="[0-9]*[.,][0-9]*" placeholder="Bet Amount (1ETH min)"/>
+                        <button onClick={this.placeBet}>Bet</button>
+                        <span class="address">Your Address:{ this.state.address }</span>
+                    </div>
                 </div>
             );
         } else {

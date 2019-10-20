@@ -26,3 +26,50 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.address {
+  margin-top: 5%;
+  font-size: 2rem;
+}
+
+table {
+  width: 80%;
+  margin-left: 10%;
+  margin-top: 5%;
+}
+
+tr, td, th {
+  border: solid 1px black;
+  padding-left: 8%;
+  padding-right: 10%;
+  padding-top: 1;
+  font-size: 2rem;
+  text-align: center;
+  text-underline-position: auto;
+}
+
+select {
+  margin-left: 2%; 
+  width: 20%;
+  height: 50px;
+  font-size: 2rem;
+}
+
+input {
+  width: 30%;
+  margin: 2%;
+  font-size: 2rem;
+  height: 50px;
+
+}
+
+button {
+  width: 20%;
+  font-size: 2rem;
+  height: 50px;
+
+}
+
+.betform {
+  margin-top: 4%;
+}

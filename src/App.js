@@ -1,8 +1,7 @@
 import React, {
 	Component
 } from 'react';
-import logo from './logo.svg';
-import './App.css';
+
 
 import getWeb3 from './utils/getWeb3.js';
 import BetForm from './BetForm';
@@ -45,24 +44,14 @@ class App extends Component {
 			div className = "App" >
 			<
 			header className = "App-header" >
-			<
-			img src = {
-				logo
-			}
-			className = "App-logo"
-			alt = "logo" / >
-			<
-			h1 className = "App-title" > Bet On InOut < /h1> < /
-			header > <
-			div >
-			Your Address: {
-				this.state.address
-			} <
-			/div>  <
-			BetForm / >
 
 			<
-			/div>
+			h1 className = "App-title" > Bet On InOut < /h1> < /
+			header > 
+ 
+			 <BetForm / >
+
+			</div>
 		);
 	}
 }
