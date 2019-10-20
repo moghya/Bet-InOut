@@ -58,13 +58,13 @@ class BetForm extends Component {
             return HackathonBettingInstance.bettors(this.state.address);
         }).then((betDetails)=> {
             console.log(betDetails);
-            // if(betDetails.isBetPlaced === true) {
-            //     this.setState({
-            //         teamId: betDetails.teamId.toNumber(),
-            //         betAmount: betDetails.betAmount.toNumber(),
-            //         hasSetBet: true
-            //     });
-            // }
+            if(betDetails.isBetPlaced === true) {
+                this.setState({
+                    teamId: betDetails.teamId.toNumber(),
+                    betAmount: betDetails.betAmount.toNumber(),
+                    hasSetBet: true
+                });
+            }
         }).catch((err)=> {
             console.error(err, ' on getTeamDetails.');
         });
@@ -200,7 +200,7 @@ class BetForm extends Component {
                 </div>
             );
         } else {
-            return <h6>Error Occured</h6>;
+            return <h6>Loading</h6>;
         };
     }
 }
